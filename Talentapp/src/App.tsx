@@ -7,9 +7,11 @@ export const App = () => {
 
   return (
     <main>
-      <h1>Supabase Auth Demo</h1>
+      <div className=' container'>
+          {/* <h1>Skill Link</h1> */}
       <AuthForm />
-      {user && <pre>{JSON.stringify(user, null, 2)}</pre>}
+      {/* {user && <pre>{JSON.stringify(user, null, 2)}</pre>} */}
+      </div>
     </main>
   );
 }

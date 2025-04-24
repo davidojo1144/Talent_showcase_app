@@ -6,6 +6,17 @@ export default {
   ],
   theme: {
     extend: {
+      colors: {
+        // Your custom colors
+        primary: {
+          DEFAULT: '#321B15',  // Dark brown (previously body bg)
+          light: '#4A2B22',   // Optional lighter variant
+        },
+        secondary: {
+          DEFAULT: '#ECE5D8',  // Cream (previously text color)
+          dark: '#D8D0C0',     // Optional darker variant
+        }
+      },
       container: {
         center: true,
         padding: {
@@ -20,9 +31,3 @@ export default {
   },
   plugins: [],
 }
-
-
-
-
-
-
