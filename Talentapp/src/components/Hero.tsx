@@ -4,11 +4,14 @@ import { AuthForm } from "./AuthForm"
 const Hero = () => {
   return (
     <div className="container">
-      <div className="flex md:flex-row flex-col pt-10 items-center justify-center gap-10">
-        <img className="w-56 rounded-xl" src={assets} alt="" />
-        <div>
-            <h2></h2>
-            <p></p>
+      <div className="flex md:flex-row flex-col pt-20 items-center justify-center gap-10">
+        <img className="md:w-56 w-full md:h-80 rounded-xl" src={assets} alt="" />
+        <div className="space-y-5">
+            <h2 className="text-center prata-regular md:text-3xl text-xl font-medium">Skill Link</h2>
+            <div className="space-y-3">
+              <p>Talent Showcase App – Where talent shines, connections thrive, and opportunities come to life! ✨ Showcase your skills, inspire the world, and build your future—one brilliant ability at a time.</p>
+              <p>Where talent meets opportunity. Showcase your skills, connect with the right audience, and turn your abilities into success—effortlessly."</p>
+            </div>
         </div>
         <AuthForm/>
       </div>
