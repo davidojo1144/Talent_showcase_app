@@ -1,17 +1,20 @@
-import { createClient } from '@supabase/supabase-js';
+import { createClient } from '@supabase/supabase-js'
 
-const supabaseUrl = import.meta.env.VITE_SUPABASE_URL;
-const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY;
+// Validate environment variables
+const supabaseUrl = import.meta.env.VITE_SUPABASE_URL
+const supabaseAnonKey = import.meta.env.VITE_SUPABASE_ANON_KEY
 
-export const supabase = createClient(supabaseUrl, supabaseAnonKey);
-
-// Optional: Extend types for better autocompletion
-declare global {
-  interface Window {
-    supabase: ReturnType<typeof createClient>;
-  }
+if (!supabaseUrl || !supabaseAnonKey) {
+  throw new Error(
+    'Supabase URL and Anon Key must be set in .env file as VITE_SUPABASE_URL and VITE_SUPABASE_ANON_KEY'
+  )
 }
 
-if (import.meta.env.DEV) {
-  window.supabase = supabase; // For debugging in browser console
+try {
+  // Test URL validity
+  new URL(supabaseUrl)
+} catch {
+  throw new Error(`Invalid Supabase URL: ${supabaseUrl}`)
 }
+
+export const supabase = createClient(supabaseUrl, supabaseAnonKey)

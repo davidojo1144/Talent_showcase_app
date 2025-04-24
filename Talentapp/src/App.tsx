@@ -1,11 +1,15 @@
-import React from 'react'
+import { useAuth } from './hooks/useAuth';
+import { AuthForm } from './components/AuthForm';
 
-const App = () => {
+// Named export (no "default")
+export const App = () => {
+  const { user } = useAuth();
+
   return (
-    <div>
-      
-    </div>
-  )
+    <main>
+      <h1>Supabase Auth Demo</h1>
+      <AuthForm />
+      {user && <pre>{JSON.stringify(user, null, 2)}</pre>}
+    </main>
+  );
 }
-
-export default App
