@@ -1,5 +1,5 @@
 import { useAuth } from './hooks/useAuth';
-import { AuthForm } from './components/AuthForm';
+import Home from './Pages/Home';
 
 // Named export (no "default")
 export const App = () => {
@@ -7,9 +7,8 @@ export const App = () => {
 
   return (
     <main>
-      <div className=' container'>
-          {/* <h1>Skill Link</h1> */}
-      <AuthForm />
+      <div className='overflow-x-hidden'>
+        <Home/>
       {/* {user && <pre>{JSON.stringify(user, null, 2)}</pre>} */}
       </div>
     </main>

@@ -23,7 +23,7 @@ export const AuthForm = () => {
 
   return (
     <div className="auth-container">
-      <h2>{isLogin ? 'Login' : 'Register'}</h2>
+      <h2 className=''>{isLogin ? 'Login' : 'Register'}</h2>
       {error && <div className="error">{error}</div>}
       <form onSubmit={handleSubmit}>
         <input
