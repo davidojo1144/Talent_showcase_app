@@ -12,12 +12,6 @@ export const useAuth = () => {
   useEffect(() => {
     const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
       setUser(session?.user ?? null);
-      // if (event === 'SIGNED_IN') {
-      //   toast.success(`Welcome back, ${session?.user.email}!`);
-      // }
-      // if (event === 'SIGNED_OUT') {
-      //   toast.info('You have been logged out');
-      // }
     });
 
     return () => subscription.unsubscribe();
@@ -35,21 +29,23 @@ export const useAuth = () => {
 
   const signIn = async (email: string, password: string): Promise<AuthResponse> => {
     const { data, error } = await supabase.auth.signInWithPassword({ email, password });
-    if (!error) {
-      toast.success(`Welcome back, ${data.user?.email}!`);
-    } else {
-      toast.error(`Login failed: ${error.message}`);
-    }
+    setTimeout(()=> {
+      if (!error) {
+        toast.success(`Welcome back, ${data.user?.email}!`);
+      } else {
+        toast.error(`Login failed: ${error.message}`);
+      }
+    }, 50)
     return { user: data.user, error };
   };
 
   const signOut = async (): Promise<{ error: Error | null }> => {
     const { error } = await supabase.auth.signOut();
-    // if (!error) {
-    //   toast.info('You have been logged out');
-    // } else {
-    //   toast.error(`Logout failed: ${error.message}`);
-    // }
+    if (!error) {
+      toast.info('You have been logged out');
+    } else {
+      toast.error(`Logout failed: ${error.message}`);
+    }
     return { error };
   };
 
