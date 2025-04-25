@@ -36,6 +36,7 @@ export const useAuth = () => {
   const signOut = async (): Promise<{ error: Error | null }> => {
     const { error } = await supabase.auth.signOut();
     return { error };
+    
   };
 
   return { user, signUp, signIn, signOut };
