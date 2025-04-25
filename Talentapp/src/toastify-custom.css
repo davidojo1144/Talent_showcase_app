@@ -1,0 +1,30 @@
+/* toastify-custom.css */
+.Toastify__toast {
+    background: #ECE5D8 !important;
+    color: #321B15 !important;
+    border-radius: 8px !important;
+    box-shadow: 0 2px 10px rgba(0, 0, 0, 0.1) !important;
+  }
+  
+  .Toastify__toast-body {
+    font-family: inherit !important;
+  }
+  
+  .Toastify__progress-bar {
+    background: rgba(50, 27, 21, 0.5) !important;
+  }
+  
+  /* Success toast specific */
+  .Toastify__toast--success {
+    border-left: 4px solid #4CAF50 !important;
+  }
+  
+  /* Error toast specific */
+  .Toastify__toast--error {
+    border-left: 4px solid #F44336 !important;
+  }
+  
+  /* Info toast specific */
+  .Toastify__toast--info {
+    border-left: 4px solid #2196F3 !important;
+  }
