@@ -6,7 +6,7 @@ export const AuthForm = () => {
   const [password, setPassword] = useState('');
   const [isLogin, setIsLogin] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { signUp, signIn, user } = useAuth();
+  const { signUp, signIn, user, signOut } = useAuth();  // Now includes signOut
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
@@ -19,7 +19,7 @@ export const AuthForm = () => {
     if (error) setError(error.message);
   };
 
-  if (user) return <div>Welcome, {user.email}! <button onClick={() => signOut()}>Logout</button></div>;
+  if (user) return <div className='p-5 border rounded-xl shadow-2xl' ><p className='prata-regular text-center md:text-3xl text-xl pb-2'>Welcome,</p> <p className='text-xl text-center'>{user.email}!</p> <button className='bg-primary text-secondary py-2 px-5 rounded-full ml-14 mt-5' onClick={() => signOut()}>Logout</button></div>;
 
   return (
     <div className="auth-container">
@@ -48,7 +48,7 @@ export const AuthForm = () => {
         onClick={() => setIsLogin(!isLogin)}
         className='text-lg mt-5'
       >
-        {isLogin ? 'Need an account? Register' : 'Have an account?  Login'}
+        {isLogin ? 'Need an account? Register' : 'Have an account? Login'}
       </button>
     </div>
   );
