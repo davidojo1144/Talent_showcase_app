@@ -42,7 +42,7 @@ export const AuthForm = () => {
 
   return (
     <div className="auth-container">
-      <h2 className='prata-regular text-center md:text-3xl text-xl pb-5'>
+      <h2 className='prata-regular text-center md:text-3xl text-2xl pb-5'>
         {isLogin ? 'Login' : 'Register'}
       </h2>
       {error && <div className="error">{error}</div>}
