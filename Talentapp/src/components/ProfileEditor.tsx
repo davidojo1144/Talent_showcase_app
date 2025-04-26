@@ -126,8 +126,89 @@ export const ProfileEditor = () => {
   if (loading) return <div className="text-center py-8">Loading profile...</div>;
 
   return (
-    <div className="max-w-md mx-auto p-6 bg-white rounded-lg shadow-md">
-      {/* Your existing form JSX */}
+    <div className="container  mx-auto p-6 bg-secondary rounded-lg shadow-xl border-primary mt-20">
+      <h2 className="text-2xl text-center font-bold mb-6 text-[#321B15]">Edit Profile</h2>
+      
+      <form onSubmit={handleSubmit} className="space-y-4">
+        {/* Avatar Upload */}
+        <div className="flex flex-col items-center">
+          <div className="relative w-24 h-24 mb-4 rounded-full overflow-hidden border-2 border-[#321B15]">
+            {previewUrl ? (
+              <img 
+                src={previewUrl} 
+                alt="Profile preview" 
+                className="w-full h-full object-cover"
+              />
+            ) : (
+              <div className="w-full h-full bg-[#ECE5D8] flex items-center justify-center">
+                <span className="text-[#321B15]">No photo</span>
+              </div>
+            )}
+          </div>
+          <label className="cursor-pointer bg-[#321B15] text-[#ECE5D8] px-4 py-2 rounded-md hover:bg-opacity-90 transition">
+            {profile.avatar_url ? 'Change Photo' : 'Upload Photo'}
+            <input 
+              type="file" 
+              accept="image/*"
+              onChange={handleFileChange}
+              className="hidden"
+            />
+          </label>
+        </div>
+
+        {/* Username */}
+        <div>
+          <label className="block text-[#321B15] mb-1">Username*</label>
+          <input
+            type="text"
+            value={profile.username || ''}
+            onChange={(e) => setProfile({...profile, username: e.target.value})}
+            className="w-full p-2 border border-[#321B15] rounded-md bg-[#ECE5D8] text-[#321B15]"
+            required
+          />
+        </div>
+
+        {/* Full Name */}
+        <div>
+          <label className="block text-[#321B15] mb-1">Full Name</label>
+          <input
+            type="text"
+            value={profile.full_name || ''}
+            onChange={(e) => setProfile({...profile, full_name: e.target.value})}
+            className="w-full p-2 border border-[#321B15] rounded-md bg-[#ECE5D8] text-[#321B15]"
+          />
+        </div>
+
+        {/* Location */}
+        <div>
+          <label className="block text-[#321B15] mb-1">Location</label>
+          <input
+            type="text"
+            value={profile.location || ''}
+            onChange={(e) => setProfile({...profile, location: e.target.value})}
+            className="w-full p-2 border border-[#321B15] rounded-md bg-[#ECE5D8] text-[#321B15]"
+          />
+        </div>
+
+        {/* Bio */}
+        <div>
+          <label className="block text-[#321B15] mb-1">Bio</label>
+          <textarea
+            value={profile.bio || ''}
+            onChange={(e) => setProfile({...profile, bio: e.target.value})}
+            className="w-full p-2 border border-[#321B15] rounded-md bg-[#ECE5D8] text-[#321B15] min-h-[100px]"
+            maxLength={200}
+          />
+        </div>
+
+        <button
+          type="submit"
+          disabled={loading}
+          className="w-full bg-[#321B15] text-[#ECE5D8] py-2 px-4 rounded-md hover:bg-opacity-90 transition disabled:opacity-50"
+        >
+          {loading ? 'Saving...' : 'Save Profile'}
+        </button>
+      </form>
     </div>
   );
 };
