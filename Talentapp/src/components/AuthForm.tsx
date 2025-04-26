@@ -1,44 +1,60 @@
+// components/AuthForm.tsx
 import { useState, FormEvent } from 'react';
 import { useAuth } from '../hooks/useAuth';
+import { useNavigate } from 'react-router-dom';
 
 export const AuthForm = () => {
   const [email, setEmail] = useState('');
   const [password, setPassword] = useState('');
   const [isLogin, setIsLogin] = useState(true);
   const [error, setError] = useState<string | null>(null);
-  const { signUp, signIn, user, signOut } = useAuth();
+  const { user, loading, signUp, signIn, signOut } = useAuth();
+  const navigate = useNavigate();
 
   const handleSubmit = async (e: FormEvent) => {
     e.preventDefault();
     setError(null);
 
-    const { error } = isLogin 
-      ? await signIn(email, password) 
-      : await signUp(email, password);
+    try {
+      const { error } = isLogin 
+        ? await signIn(email, password)
+        : await signUp(email, password);
 
-    if (error) setError(error.message);
+      if (error) {
+        setError(error.message);
+      } else {
+        navigate('/profile'); // Redirect after successful auth
+      }
+    } catch (err) {
+      setError('An unexpected error occurred');
+    }
   };
 
   const handleSignOut = async () => {
     await signOut();
-    // Reset form state after logout
     setEmail('');
     setPassword('');
     setError(null);
   };
 
-  if (user) return (
-    <div className='p-5 border rounded-xl shadow-2xl'>
-      <p className='prata-regular text-center md:text-3xl text-xl pb-2'>Welcome,</p> 
-      <p className='text-xl text-center'>{user.email}!</p> 
-      <button 
-        className='bg-primary text-secondary py-2 px-5 rounded-full ml-14 mt-5' 
-        onClick={handleSignOut}  // Use the new handler
-      >
-        Logout
-      </button>
-    </div>
-  );
+  if (loading) {
+    return <div>Loading...</div>;
+  }
+
+  if (user) {
+    return (
+      <div className='p-5 border rounded-xl shadow-2xl'>
+        <p className='prata-regular text-center md:text-3xl text-xl pb-2'>Welcome,</p> 
+        <p className='text-xl text-center'>{user.email}!</p>
+        <button 
+          className='bg-primary text-secondary py-2 px-5 rounded-full ml-14 mt-5' 
+          onClick={handleSignOut}
+        >
+          Logout
+        </button>
+      </div>
+    );
+  }
 
   return (
     <div className="auth-container">
@@ -67,8 +83,9 @@ export const AuthForm = () => {
         <button 
           className='bg-primary py-1 px-3 rounded-full text-secondary' 
           type="submit"
+          disabled={loading}
         >
-          {isLogin ? 'Login' : 'Register'}
+          {loading ? 'Processing...' : isLogin ? 'Login' : 'Register'}
         </button>
       </form>
       <button  
