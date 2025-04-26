@@ -1,7 +1,8 @@
+// src/context/AuthContext.tsx
 import { createContext, useContext, useEffect, useState } from 'react';
 import { supabase } from '../lib/supabase';
 import { User } from '@supabase/supabase-js';
-import { useNavigate } from 'react-router-dom';
+import { toast } from 'react-toastify';
 
 type AuthContextType = {
   user: User | null;
@@ -16,7 +17,6 @@ const AuthContext = createContext<AuthContextType | undefined>(undefined);
 export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
   const [user, setUser] = useState<User | null>(null);
   const [isLoading, setIsLoading] = useState(true);
-  const navigate = useNavigate();
 
   useEffect(() => {
     const getSession = async () => {
@@ -27,41 +27,39 @@ export const AuthProvider = ({ children }: { children: React.ReactNode }) => {
 
     getSession();
 
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((event, session) => {
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
       setUser(session?.user ?? null);
       setIsLoading(false);
-      if (event === 'SIGNED_OUT') {
-        navigate('/login');
-      }
     });
 
     return () => subscription.unsubscribe();
-  }, [navigate]);
+  }, []);
 
   const signIn = async (email: string, password: string) => {
-    setIsLoading(true);
-    try {
-      const { error } = await supabase.auth.signInWithPassword({ email, password });
-      if (error) throw error;
-      navigate('/profile');
-    } finally {
-      setIsLoading(false);
+    const { error, data } = await supabase.auth.signInWithPassword({ email, password });
+    if (error) {
+      toast.error(`Login failed: ${error.message}`);
+      throw error;
     }
+    toast.success(`Welcome back, ${data.user?.email}!`);
   };
 
   const signUp = async (email: string, password: string) => {
-    setIsLoading(true);
-    try {
-      const { error } = await supabase.auth.signUp({ email, password });
-      if (error) throw error;
-      navigate('/profile');
-    } finally {
-      setIsLoading(false);
+    const { error, data } = await supabase.auth.signUp({ email, password });
+    if (error) {
+      toast.error(`Sign up failed: ${error.message}`);
+      throw error;
     }
+    toast.success('Account created! Please check your email for verification.');
   };
 
   const signOut = async () => {
-    await supabase.auth.signOut();
+    const { error } = await supabase.auth.signOut();
+    if (error) {
+      toast.error(`Logout failed: ${error.message}`);
+      throw error;
+    }
+    toast.info('You have been logged out.');
   };
 
   return (

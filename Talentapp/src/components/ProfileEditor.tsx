@@ -3,6 +3,15 @@ import { supabase } from '../lib/supabase';
 import { toast } from 'react-toastify';
 import { useAuth } from '../context/AuthContext';
 
+type Profile = {
+  id: string;
+  username: string;
+  full_name: string;
+  location?: string;
+  bio?: string;
+  avatar_url?: string;
+};
+
 export const ProfileEditor = () => {
   const { user } = useAuth();
   const [profile, setProfile] = useState<Partial<Profile>>({
@@ -22,17 +31,13 @@ export const ProfileEditor = () => {
       try {
         setLoading(true);
         
-        // Enhanced query with error handling
         const { data, error } = await supabase
           .from('profiles')
           .select('*')
           .eq('id', user.id)
-          .maybeSingle();  // Use maybeSingle instead of single
+          .maybeSingle();
 
-        if (error) {
-          console.error('Supabase error:', error);
-          throw error;
-        }
+        if (error) throw error;
 
         if (data) {
           setProfile(data);
@@ -40,7 +45,6 @@ export const ProfileEditor = () => {
             setPreviewUrl(getPublicUrl(data.avatar_url));
           }
         } else {
-          // Initialize new profile if doesn't exist
           setProfile({
             username: user.email?.split('@')[0] || '',
             full_name: '',
@@ -62,10 +66,16 @@ export const ProfileEditor = () => {
   const getPublicUrl = (path: string) => {
     const { data } = supabase.storage
       .from('avatars')
-      .getPublicUrl(path, {
-        download: false
-      });
+      .getPublicUrl(path);
     return data.publicUrl;
+  };
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    if (e.target.files && e.target.files[0]) {
+      const file = e.target.files[0];
+      setAvatarFile(file);
+      setPreviewUrl(URL.createObjectURL(file));
+    }
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -74,49 +84,38 @@ export const ProfileEditor = () => {
     
     try {
       setLoading(true);
-      
-      // Upload new avatar if selected
       let avatarPath = profile.avatar_url;
+
       if (avatarFile) {
         const fileExt = avatarFile.name.split('.').pop();
         const fileName = `${user.id}-${Date.now()}.${fileExt}`;
         const { error: uploadError } = await supabase.storage
           .from('avatars')
-          .upload(fileName, avatarFile, {
-            cacheControl: '3600',
-            upsert: false
-          });
+          .upload(fileName, avatarFile);
 
         if (uploadError) throw uploadError;
         avatarPath = fileName;
 
-        // Delete old avatar if exists
         if (profile.avatar_url) {
-          await supabase.storage
-            .from('avatars')
-            .remove([profile.avatar_url]);
+          await supabase.storage.from('avatars').remove([profile.avatar_url]);
         }
       }
 
-      // Upsert profile data
-      const updates = {
-        id: user.id,
-        ...profile,
-        avatar_url: avatarPath,
-        updated_at: new Date().toISOString()
-      };
-
       const { error } = await supabase
         .from('profiles')
-        .upsert(updates, {
+        .upsert({
+          id: user.id,
+          ...profile,
+          avatar_url: avatarPath,
+          updated_at: new Date().toISOString(),
+        }, {
           onConflict: 'id'
         });
 
       if (error) throw error;
       toast.success('Profile updated successfully!');
     } catch (error) {
-      const message = error instanceof Error ? error.message : 'Profile update failed';
-      toast.error(message);
+      toast.error('Profile update failed');
       console.error('Submit error:', error);
     } finally {
       setLoading(false);
@@ -126,7 +125,7 @@ export const ProfileEditor = () => {
   if (loading) return <div className="text-center py-8">Loading profile...</div>;
 
   return (
-    <div className="container  mx-auto p-6 bg-secondary rounded-lg shadow-xl border-primary mt-20">
+    <div className="container mx-auto p-6 bg-secondary rounded-lg shadow-xl border-primary mt-20">
       <h2 className="text-2xl text-center font-bold mb-6 text-[#321B15]">Edit Profile</h2>
       
       <form onSubmit={handleSubmit} className="space-y-4">
@@ -156,7 +155,7 @@ export const ProfileEditor = () => {
           </label>
         </div>
 
-        {/* Username */}
+        {/* Form Fields */}
         <div>
           <label className="block text-[#321B15] mb-1">Username*</label>
           <input
@@ -168,7 +167,6 @@ export const ProfileEditor = () => {
           />
         </div>
 
-        {/* Full Name */}
         <div>
           <label className="block text-[#321B15] mb-1">Full Name</label>
           <input
@@ -179,7 +177,6 @@ export const ProfileEditor = () => {
           />
         </div>
 
-        {/* Location */}
         <div>
           <label className="block text-[#321B15] mb-1">Location</label>
           <input
@@ -190,7 +187,6 @@ export const ProfileEditor = () => {
           />
         </div>
 
-        {/* Bio */}
         <div>
           <label className="block text-[#321B15] mb-1">Bio</label>
           <textarea
