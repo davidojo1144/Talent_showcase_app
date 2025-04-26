@@ -1,11 +1,11 @@
 import { useAuth } from './context/AuthContext';
 import { Routes, Route, Navigate } from 'react-router-dom';
 import Home from './Pages/Home';
-import AuthForm from './components/AuthForm';
+import {AuthForm} from './components/AuthForm';
 import ProfilePage from './Pages/Profile';
 import { LoadingSpinner } from './components/LoadingSpinner';
 
-export const App = () => {
+export  const App = () => {
   const { user, isLoading } = useAuth();
 
   if (isLoading) {

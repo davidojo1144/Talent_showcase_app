@@ -1,7 +1,7 @@
 import React from 'react'
 import Hero from '../components/Hero'
 import Footer from '../components/Footer'
-import { ProfileEditor } from './Profile'
+import { ProfileEditor } from '../components/ProfileEditor'
 
 const Home = () => {
   return (
