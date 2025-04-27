@@ -143,7 +143,7 @@ export const SkillPostEditor = ({ postId }: { postId?: string }) => {
         {/* Image Upload */}
         <div className="flex flex-col items-start">
           <label className="block text-gray-700 mb-2">Featured Image</label>
-          <div className="relative w-36  h-48 mb-4 rounded-2xl overflow-hidden border border-gray-300">
+          <div className="relative w-36  h-48 mb-4 rounded-2xl overflow-hidden border border-black">
             {previewUrl ? (
               <img 
                 src={previewUrl} 
@@ -151,12 +151,12 @@ export const SkillPostEditor = ({ postId }: { postId?: string }) => {
                 className="w-full h-full object-cover"
               />
             ) : (
-              <div className="w-full h-full bg-gray-100 flex items-center justify-center">
+              <div className="w-full h-full bg-[#CBB89D]  flex items-center justify-center">
                 <span className="text-gray-500">No image selected</span>
               </div>
             )}
           </div>
-          <label className="cursor-pointer bg-primary text-secondary px-4 py-2 rounded-md hover:bg-blue-700 transition">
+          <label className="cursor-pointer bg-primary text-secondary px-4 py-2 rounded-md  transition">
             {post.image_url ? 'Change Image' : 'Upload Image'}
             <input 
               type="file" 
@@ -174,7 +174,7 @@ export const SkillPostEditor = ({ postId }: { postId?: string }) => {
             type="text"
             value={post.title}
             onChange={(e) => setPost({...post, title: e.target.value})}
-            className="w-full p-2 border border-gray-300 rounded-md"
+            className="w-full p-2 border bg-[#CBB89D] border-black rounded-md"
             required
           />
         </div>
@@ -185,7 +185,7 @@ export const SkillPostEditor = ({ postId }: { postId?: string }) => {
           <select
             value={post.category}
             onChange={(e) => setPost({...post, category: e.target.value})}
-            className="w-full p-2 border border-gray-300 rounded-md"
+            className="w-full p-2 border bg-[#CBB89D] border-black rounded-md"
             required
           >
             <option value="">Select a category</option>
@@ -201,7 +201,7 @@ export const SkillPostEditor = ({ postId }: { postId?: string }) => {
           <textarea
             value={post.description}
             onChange={(e) => setPost({...post, description: e.target.value})}
-            className="w-full p-2 border border-gray-300 rounded-md min-h-[150px]"
+            className="w-full p-2 border bg-[#CBB89D] border-black rounded-md min-h-[150px]"
             required
           />
         </div>
