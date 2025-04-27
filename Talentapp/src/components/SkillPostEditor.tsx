@@ -160,7 +160,7 @@ export const SkillPostEditor = ({ postId }: { postId?: string }) => {
               </div>
             )}
           </div>
-          <label className="cursor-pointer bg-secondary text-secondary px-4 py-2 rounded-md transition">
+          <label className="cursor-pointer bg-primary text-secondary px-4 py-2 rounded-md transition">
             {post.image_url ? 'Change Image' : 'Upload Image'}
             <input 
               type="file" 
