@@ -18,7 +18,6 @@ export const App = () => {
   return (
     <main className="overflow-x-hidden">
       <Home />
-      {user ? <ProfilePage /> : <AuthForm />}
     </main>
   );
 };
