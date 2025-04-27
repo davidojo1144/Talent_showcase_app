@@ -4,6 +4,7 @@ import { supabase } from '../lib/supabase';
 import { toast } from 'react-toastify';
 import { useAuth } from '../context/AuthContext';
 import { LoadingSpinner } from './LoadingSpinner';
+import { Link } from 'react-router-dom';
 
 type SkillPost = {
   id?: string;
@@ -34,7 +35,7 @@ export const SkillPostEditor = ({ postId }: { postId?: string }) => {
     } else {
       setLoading(false);
     }
-  }, [postId]);
+  }, [postId, user?.id]);
 
   const fetchPost = async () => {
     try {
@@ -84,7 +85,6 @@ export const SkillPostEditor = ({ postId }: { postId?: string }) => {
       setLoading(true);
       let imagePath = post.image_url || null;
 
-      // Upload new image if selected
       if (imageFile) {
         const fileExt = imageFile.name.split('.').pop();
         const fileName = `${user.id}-${Date.now()}.${fileExt}`;
@@ -95,13 +95,11 @@ export const SkillPostEditor = ({ postId }: { postId?: string }) => {
         if (uploadError) throw uploadError;
         imagePath = fileName;
 
-        // Delete old image if exists
         if (post.image_url) {
           await supabase.storage.from('skill_images').remove([post.image_url]);
         }
       }
 
-      // Upsert the post data
       const { error } = await supabase
         .from('skill_posts')
         .upsert({
@@ -117,7 +115,6 @@ export const SkillPostEditor = ({ postId }: { postId?: string }) => {
       if (error) throw error;
       toast.success(postId ? 'Post updated successfully!' : 'Post created successfully!');
       
-      // Reset form if creating new post
       if (!postId) {
         setPost({ title: '', description: '', category: '', image_url: null });
         setPreviewUrl(null);
@@ -133,8 +130,15 @@ export const SkillPostEditor = ({ postId }: { postId?: string }) => {
 
   if (loading) return <div className="flex items-center justify-center py-8"><LoadingSpinner/></div>;
 
+  // Show login prompt if user isn't logged in and not editing an existing post
+  if (!user?.id && !postId) {
+    return (
+        <div className="flex items-center justify-center py-8"><LoadingSpinner/></div>
+    )
+  }
+
   return (
-    <div className="container mx-auto p-6 bg-[#CBB89D] rounded-lg shadow-2xl w-full mt-20">
+    <div className="container mx-auto p-6 bg-secondary rounded-lg shadow-2xl w-full mt-32">
       <h2 className="text-2xl font-bold mb-6 text-gray-800">
         {postId ? 'Edit Skill Post' : 'Create New Skill Post'}
       </h2>
@@ -143,7 +147,7 @@ export const SkillPostEditor = ({ postId }: { postId?: string }) => {
         {/* Image Upload */}
         <div className="flex flex-col items-start">
           <label className="block text-gray-700 mb-2">Featured Image</label>
-          <div className="relative w-36  h-48 mb-4 rounded-2xl overflow-hidden border border-black">
+          <div className="relative w-36 h-48 mb-4 rounded-2xl overflow-hidden border border-black">
             {previewUrl ? (
               <img 
                 src={previewUrl} 
@@ -151,12 +155,12 @@ export const SkillPostEditor = ({ postId }: { postId?: string }) => {
                 className="w-full h-full object-cover"
               />
             ) : (
-              <div className="w-full h-full bg-[#CBB89D]  flex items-center justify-center">
+              <div className="w-full h-full bg-secondary flex items-center justify-center">
                 <span className="text-gray-500">No image selected</span>
               </div>
             )}
           </div>
-          <label className="cursor-pointer bg-primary text-secondary px-4 py-2 rounded-md  transition">
+          <label className="cursor-pointer bg-secondary text-secondary px-4 py-2 rounded-md transition">
             {post.image_url ? 'Change Image' : 'Upload Image'}
             <input 
               type="file" 
@@ -174,7 +178,7 @@ export const SkillPostEditor = ({ postId }: { postId?: string }) => {
             type="text"
             value={post.title}
             onChange={(e) => setPost({...post, title: e.target.value})}
-            className="w-full p-2 border bg-[#CBB89D] border-black rounded-md"
+            className="w-full p-2 border bg-secondary border-black rounded-md"
             required
           />
         </div>
@@ -185,7 +189,7 @@ export const SkillPostEditor = ({ postId }: { postId?: string }) => {
           <select
             value={post.category}
             onChange={(e) => setPost({...post, category: e.target.value})}
-            className="w-full p-2 border bg-[#CBB89D] border-black rounded-md"
+            className="w-full p-2 border bg-secondary border-black rounded-md"
             required
           >
             <option value="">Select a category</option>
@@ -201,7 +205,7 @@ export const SkillPostEditor = ({ postId }: { postId?: string }) => {
           <textarea
             value={post.description}
             onChange={(e) => setPost({...post, description: e.target.value})}
-            className="w-full p-2 border bg-[#CBB89D] border-black rounded-md min-h-[150px]"
+            className="w-full p-2 border bg-secondary border-black rounded-md min-h-[150px]"
             required
           />
         </div>
@@ -209,7 +213,7 @@ export const SkillPostEditor = ({ postId }: { postId?: string }) => {
         <button
           type="submit"
           disabled={loading}
-          className="w-full bg-primary text-secondary py-2 px-4 rounded-md  transition disabled:opacity-50"
+          className="w-full bg-primary text-secondary py-2 px-4 rounded-md transition disabled:opacity-50"
         >
           {loading ? (postId ? 'Updating...' : 'Creating...') : (postId ? 'Update Post' : 'Create Post')}
         </button>
