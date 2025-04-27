@@ -133,7 +133,7 @@ export const SkillPostEditor = ({ postId }: { postId?: string }) => {
   // Show login prompt if user isn't logged in and not editing an existing post
   if (!user?.id && !postId) {
     return (
-        <div className="flex items-center justify-center py-8"><LoadingSpinner/></div>
+        <div className="flex items-center justify-center text-xl prata-regular py-8">Login to be able to make a post!</div>
     )
   }
 
