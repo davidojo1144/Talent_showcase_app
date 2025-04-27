@@ -2,6 +2,7 @@ import { useState, useEffect } from 'react';
 import { supabase } from '../lib/supabase';
 import { toast } from 'react-toastify';
 import { useAuth } from '../context/AuthContext';
+import { LoadingSpinner } from './LoadingSpinner';
 
 type Profile = {
   id: string;
@@ -122,7 +123,8 @@ export const ProfileEditor = () => {
     }
   };
 
-  if (loading) return <div className="text-center py-8">Loading profile...</div>;
+  if (loading) return <div className="flex items-center justify-center py-8"><div><LoadingSpinner/></div></div>
+  
 
   return (
     <div className="container mx-auto p-6 bg-secondary rounded-lg shadow-xl border-primary mt-20">
